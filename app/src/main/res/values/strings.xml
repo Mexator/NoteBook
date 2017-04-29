@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Sam</string>
+    <string name="title_activity_chapter_name_enter">ChapterNameEnterActivity</string>
 </resources>
