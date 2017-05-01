@@ -1,8 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.sam.ChapterNameEnterActivity">
+    tools:context="com.example.sam.ChapterNameEnterActivity"
+    android:orientation="vertical"
+    android:layout_gravity="bottom"
+    android:weightSum="1">
 
-</RelativeLayout>
+    <TextView
+        android:text="Введите название нового раздела"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView2" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:id="@+id/edit_chapter_name" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom">
+
+        <Button
+            android:text="Отмена"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/chapter_create_cancel_button"
+            android:layout_marginBottom="82dp"
+            android:layout_weight="1" />
+
+        <Button
+            android:text="ОК"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/chapter_create_ok_button"
+            android:layout_marginBottom="94dp"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+</LinearLayout>

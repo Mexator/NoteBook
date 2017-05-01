@@ -17,7 +17,7 @@
         </activity>
         <activity
             android:name=".ChapterNameEnterActivity"
-            android:label="@string/title_activity_chapter_name_enter"
+            android:label="Создание раздела"
             android:theme="@style/AppTheme"></activity>
     </application>
 
