@@ -18,7 +18,8 @@
         <activity
             android:name=".ChapterNameEnterActivity"
             android:label="Создание раздела"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
+        <activity android:name=".EditPageActivity"></activity>
     </application>
 
 </manifest>
