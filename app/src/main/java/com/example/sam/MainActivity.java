@@ -17,7 +17,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
     TabHost Tabs;
     ListView PageList;
-    Button AddChapterButton;
+    Button AddChapterButton,RemoveChapterButton;
     ImageView CreateFirstPage;
     int TabsID =0;
 
@@ -47,6 +47,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         AddChapterButton = (Button)findViewById(R.id.add_chapter_button);
         AddChapterButton.setOnClickListener(this);
 
+        RemoveChapterButton = (Button)findViewById(R.id.delete_chapter_button);
+        RemoveChapterButton.setOnClickListener(this);
+
         CreateFirstPage = (ImageView)findViewById(R.id.first_page_button);
         CreateFirstPage.setOnClickListener(this);
     }
@@ -71,6 +74,12 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
                 String TabTag = Tabs.getCurrentTabTag();
                 AddNewPage(TabTag,"g");
+                break;
+            }
+            case R.id.delete_chapter_button:
+            {
+                String tag = Tabs.getCurrentTabTag();
+                DeleteChapter(tag);
             }
         }
     }
@@ -84,12 +93,23 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             AddNewChapter(Tabs,Name);
         }
     }
-    private int DeleteChapter(int id)
+    private int DeleteChapter(String tag)
     {
-        if(id!=0)
+        if(tag.equals("tab0"))
         {
-            Tabs.getTabWidget().getChildTabViewAt(id).setVisibility(View.GONE);
+            Toast.makeText(getBaseContext(),"Could not delete main chapter",Toast.LENGTH_SHORT).show();
+            return 1;
         }
+        int SenderID = Tabs.getCurrentTab();
+        Tabs.setCurrentTabByTag(tag);
+        int ReceiverID = Tabs.getCurrentTab();
+
+        Tabs.getTabWidget().getChildTabViewAt(ReceiverID).setVisibility(View.GONE);
+
+        noteBook.Chapters.remove(tag);
+
+        if(SenderID!=ReceiverID) Tabs.setCurrentTab(SenderID);
+        else Tabs.setCurrentTab(0);
         return 0;
     }
     private void AddNewPage(String tag,String name)
