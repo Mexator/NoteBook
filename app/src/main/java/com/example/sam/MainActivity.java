@@ -1,25 +1,34 @@
 package com.example.sam;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.PagerAdapter;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.Toast;
 
-
-public class MainActivity extends FragmentActivity implements View.OnClickListener, TabHost.OnTabChangeListener
+public class MainActivity extends Activity implements View.OnClickListener, TabHost.OnTabChangeListener
 {
+    final int ChapterCreateRequest = 1;
+    final int PageCreateRequest=2;
+
     NoteBook noteBook = new NoteBook();
 
     TabHost Tabs;
     ListView PageList;
     Button AddChapterButton,RemoveChapterButton;
+    Button AddPageButton;
     ImageView CreateFirstPage;
+    View EmptyLayout,NonEmptyLayout;
     int TabsID =0;
+
+    ArrayAdapter<String> PageAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -27,9 +36,12 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        FindViews();
+
         InitTabHost(Tabs);
 
         Tabs.setOnTabChangedListener(this);
+
 
         SetListeners();
     }
@@ -40,18 +52,23 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
         AddNewChapter(Tabs,"Заметки");
     }
+    private void FindViews()
+    {
+        AddChapterButton = (Button)findViewById(R.id.add_chapter_button);
+        RemoveChapterButton = (Button)findViewById(R.id.delete_chapter_button);
+        AddPageButton = (Button)findViewById(R.id.add_page_button);
+        CreateFirstPage = (ImageView)findViewById(R.id.first_page_button);
+        PageList = (ListView)findViewById(R.id.pages_list);
+        NonEmptyLayout = (View)findViewById(R.id.pages_list).getParent();
+        EmptyLayout = (View)findViewById(R.id.first_page_button).getParent();
+    }
     private void SetListeners()
     {
         Tabs.setOnTabChangedListener(this);
-
-        AddChapterButton = (Button)findViewById(R.id.add_chapter_button);
         AddChapterButton.setOnClickListener(this);
-
-        RemoveChapterButton = (Button)findViewById(R.id.delete_chapter_button);
         RemoveChapterButton.setOnClickListener(this);
-
-        CreateFirstPage = (ImageView)findViewById(R.id.first_page_button);
         CreateFirstPage.setOnClickListener(this);
+        AddPageButton.setOnClickListener(this);
     }
     @Override
     public void onClick(View view)
@@ -61,37 +78,64 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             case R.id.add_chapter_button:
             {
                 Intent intent = new Intent(MainActivity.this,ChapterNameEnterActivity.class);
-                startActivityForResult(intent,1);
+                startActivityForResult(intent,ChapterCreateRequest);
                 break;
             }
             case R.id.first_page_button:
             {
-                View layout = (View)CreateFirstPage.getParent();
-                layout.setVisibility(View.INVISIBLE);
-
-                layout = (View)findViewById(R.id.pages_list);
-                layout.setVisibility(View.VISIBLE);
-
                 String TabTag = Tabs.getCurrentTabTag();
-                AddNewPage(TabTag,"g");
+                PageAdapter = new ArrayAdapter<String>
+                    (this,android.R.layout.simple_list_item_1,noteBook.Chapters.get(TabTag).Pages);
+                PageList.setAdapter(PageAdapter);
+
+                NonEmptyLayout.setVisibility(View.VISIBLE);
+                EmptyLayout.setVisibility(View.INVISIBLE);
+
                 break;
             }
             case R.id.delete_chapter_button:
             {
                 String tag = Tabs.getCurrentTabTag();
                 DeleteChapter(tag);
+                break;
+            }
+            case R.id.add_page_button:
+            {
+                Intent intent = new Intent(MainActivity.this,PageNameEnterActivity.class);
+                startActivityForResult(intent,PageCreateRequest);
+                break;
             }
         }
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
-        if(data==null) return;
-        if(requestCode != RESULT_CANCELED)
+        switch (requestCode)
         {
-            String Name = data.getStringExtra("ChapterName");
-            AddNewChapter(Tabs,Name);
+            case ChapterCreateRequest:
+            {
+                if(data==null) return;
+                if(resultCode != RESULT_CANCELED)
+                {
+                    String Name = data.getStringExtra("ChapterName");
+                    AddNewChapter(Tabs,Name);
+                }
+                break;
+            }
+            case PageCreateRequest:
+            {
+                if(data==null) return;
+                if(resultCode != RESULT_CANCELED)
+                {
+                    String Name = data.getStringExtra("PageName");
+                    noteBook.Chapters.get(Tabs.getCurrentTabTag()).AddPage(Name);
+                    PageList.setAdapter(PageAdapter);
+                    PageAdapter.notifyDataSetChanged();
+                }
+                break;
+            }
         }
+
     }
     private int DeleteChapter(String tag)
     {
@@ -112,12 +156,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         else Tabs.setCurrentTab(0);
         return 0;
     }
-    private void AddNewPage(String tag,String name)
-    {
-        Chapter cu = noteBook.Chapters.get(tag);
-        cu.Pages.add(name);
-        cu.PagesExist=true;
-    }
     private void AddNewChapter(TabHost tabHost,String name)//Creates new tab in tabhost
     {
         String tag = "tab"+Integer.toString(TabsID++);
@@ -126,36 +164,34 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         tabSpec.setIndicator(name);
         Tabs.addTab(tabSpec);
 
-        Chapter chapter = new Chapter(TabsID-1,tabHost);
+        Chapter chapter = new Chapter(this.getBaseContext(),TabsID-1,tabHost);
         noteBook.Chapters.put(tag,chapter);
         noteBook.ChaptersNum++;
 
         Tabs.setCurrentTabByTag(tag);
 
-        View layout = (View)findViewById(R.id.pages_list).getParent();
-        layout.setVisibility(View.INVISIBLE);
+        EmptyLayout.setVisibility(View.VISIBLE);
+        NonEmptyLayout.setVisibility(View.INVISIBLE);
     }
 
     @Override
-    public void onTabChanged(String tabID)
+    public void onTabChanged(String tabTag)
     {
-            Chapter g = (Chapter)noteBook.Chapters.get(tabID);
-            if (g.PagesExist)
-            {
-                View layout = (View)findViewById(R.id.pages_list).getParent();
-                layout.setVisibility(View.VISIBLE);
+        Chapter g = (Chapter)noteBook.Chapters.get(tabTag);
+        if (g.PagesExist)
+        {
+            PageAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,noteBook.Chapters.get(tabTag).Pages);
+            PageList.setAdapter(PageAdapter);
+            PageAdapter.notifyDataSetChanged();
 
-                layout = (View)findViewById(R.id.first_page_button).getParent();
-                layout.setVisibility(View.INVISIBLE);
-            }
-            else
-            {
-                View layout = (View)findViewById(R.id.pages_list).getParent();
-                layout.setVisibility(View.INVISIBLE);
-
-                layout = (View)findViewById(R.id.first_page_button).getParent();
-                layout.setVisibility(View.VISIBLE);
-            }
-            Toast.makeText(getBaseContext(),tabID,Toast.LENGTH_SHORT).show();
+            EmptyLayout.setVisibility(View.INVISIBLE);
+            NonEmptyLayout.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            EmptyLayout.setVisibility(View.VISIBLE);
+            NonEmptyLayout.setVisibility(View.INVISIBLE);
+        }
+        Toast.makeText(getBaseContext(),tabTag,Toast.LENGTH_SHORT).show();
     }
 }

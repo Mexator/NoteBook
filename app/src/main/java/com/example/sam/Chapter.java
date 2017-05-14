@@ -1,10 +1,14 @@
 package com.example.sam;
 
+import android.app.Application;
+import android.content.Context;
 import android.view.View;
-import android.widget.LinearLayout;
+import android.widget.ArrayAdapter;
 import android.widget.TabHost;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -15,28 +19,39 @@ public class Chapter
 {
     static TabHost tabHost;
 
-    private int NoteNumber;
+    private int PageCounter;
     public boolean PagesExist;
-    public HashSet<String> Pages;
+    public List Pages;
     public int TabId;//ID of tab linked with Chapter
     View EmptyChapterLayout;
     View NotEmptyChapterLayout;
 
-    public Chapter(int tabId, TabHost tab_host)
+    public Chapter(Context context,int tabId, TabHost tab_host)
     {
-        NoteNumber=0;
+        PageCounter=0;
         PagesExist = false;
 
         TabId = tabId;
         tabHost = tab_host;
 
-        Pages = new HashSet<>();
+        Pages = new ArrayList<String>();
     }
-    public Chapter(int tabId)
+    public Chapter(Context context,int tabId)
     {
-        NoteNumber=0;
+        PageCounter=0;
         PagesExist = false;
 
+        Pages = new ArrayList<String>();
         TabId = tabId;
+    }
+    public void AddPage()
+    {
+        Pages.add("page"+PageCounter++);
+        PagesExist=true;
+    }
+    public void AddPage(String name)
+    {
+        Pages.add(name);
+        PagesExist=true;
     }
 }

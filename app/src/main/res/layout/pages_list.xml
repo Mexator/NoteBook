@@ -5,8 +5,15 @@
     android:layout_height="match_parent"
     android:id="@+id/pages_list_layout">
 
+    <Button
+        android:text="Add page"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/add_page_button" />
+
     <ListView
         android:id="@+id/pages_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
 </LinearLayout>

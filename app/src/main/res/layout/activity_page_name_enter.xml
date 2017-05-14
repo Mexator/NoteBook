@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_page_name_enter"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.sam.PageNameEnterActivity"
+    android:orientation="vertical">
+
+    <TextView
+        android:text="Введите название новой страницы"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView3" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:id="@+id/edit_page_name" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:text="Отмена"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/page_create_cancel_button"
+            android:layout_marginBottom="82dp"
+            android:layout_weight="1" />
+
+        <Button
+            android:text="ОК"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/page_create_ok_button"
+            android:layout_marginBottom="94dp"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+</LinearLayout>
