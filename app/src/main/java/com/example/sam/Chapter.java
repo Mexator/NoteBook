@@ -21,7 +21,7 @@ public class Chapter
 
     private int PageCounter;
     public boolean PagesExist;
-    public List Pages;
+    public List<Page> Pages;
     public int TabId;//ID of tab linked with Chapter
     View EmptyChapterLayout;
     View NotEmptyChapterLayout;
@@ -34,24 +34,42 @@ public class Chapter
         TabId = tabId;
         tabHost = tab_host;
 
-        Pages = new ArrayList<String>();
+        Pages = new ArrayList<Page>();
     }
     public Chapter(Context context,int tabId)
     {
         PageCounter=0;
         PagesExist = false;
 
-        Pages = new ArrayList<String>();
+        Pages = new ArrayList<Page>();
         TabId = tabId;
     }
     public void AddPage()
     {
-        Pages.add("page"+PageCounter++);
+        Pages.add(new Page("page"+PageCounter++));
         PagesExist=true;
     }
     public void AddPage(String name)
     {
-        Pages.add(name);
+        Pages.add(new Page(name));
         PagesExist=true;
+    }
+    public void RemovePage(int position)
+    {
+        Pages.remove(position);
+        if(Pages.size()==0)
+        {
+            PagesExist = false;
+        }
+    }
+    public List CreateHeadersList()
+    {
+        List Headers = new ArrayList<String>();
+
+        for(Page CurPage: Pages)
+        {
+            Headers.add(CurPage.Header);
+        }
+        return Headers;
     }
 }

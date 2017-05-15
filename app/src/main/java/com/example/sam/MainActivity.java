@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -13,8 +14,7 @@ import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.Toast;
 
-public class MainActivity extends Activity implements View.OnClickListener, TabHost.OnTabChangeListener
-{
+public class MainActivity extends Activity implements View.OnClickListener, TabHost.OnTabChangeListener, AdapterView.OnItemLongClickListener, AdapterView.OnItemClickListener {
     final int ChapterCreateRequest = 1;
     final int PageCreateRequest=2;
 
@@ -69,6 +69,8 @@ public class MainActivity extends Activity implements View.OnClickListener, TabH
         RemoveChapterButton.setOnClickListener(this);
         CreateFirstPage.setOnClickListener(this);
         AddPageButton.setOnClickListener(this);
+        PageList.setOnItemClickListener(this);
+        PageList.setOnItemLongClickListener(this);
     }
     @Override
     public void onClick(View view)
@@ -81,22 +83,21 @@ public class MainActivity extends Activity implements View.OnClickListener, TabH
                 startActivityForResult(intent,ChapterCreateRequest);
                 break;
             }
-            case R.id.first_page_button:
-            {
-                String TabTag = Tabs.getCurrentTabTag();
-                PageAdapter = new ArrayAdapter<String>
-                    (this,android.R.layout.simple_list_item_1,noteBook.Chapters.get(TabTag).Pages);
-                PageList.setAdapter(PageAdapter);
-
-                NonEmptyLayout.setVisibility(View.VISIBLE);
-                EmptyLayout.setVisibility(View.INVISIBLE);
-
-                break;
-            }
             case R.id.delete_chapter_button:
             {
                 String tag = Tabs.getCurrentTabTag();
                 DeleteChapter(tag);
+                break;
+            }
+            case R.id.first_page_button:
+            {
+                String TabTag = Tabs.getCurrentTabTag();
+                PageAdapter = new ArrayAdapter<String>
+                        (this,android.R.layout.simple_list_item_1,noteBook.Chapters.get(TabTag).CreateHeadersList());
+                PageList.setAdapter(PageAdapter);
+
+                Intent intent = new Intent(MainActivity.this,PageNameEnterActivity.class);
+                startActivityForResult(intent,PageCreateRequest);
                 break;
             }
             case R.id.add_page_button:
@@ -129,8 +130,15 @@ public class MainActivity extends Activity implements View.OnClickListener, TabH
                 {
                     String Name = data.getStringExtra("PageName");
                     noteBook.Chapters.get(Tabs.getCurrentTabTag()).AddPage(Name);
+
+                    String TabTag = Tabs.getCurrentTabTag();
+                    PageAdapter = new ArrayAdapter<String>
+                            (this,android.R.layout.simple_list_item_1,noteBook.Chapters.get(TabTag).CreateHeadersList());
                     PageList.setAdapter(PageAdapter);
                     PageAdapter.notifyDataSetChanged();
+
+                    EmptyLayout.setVisibility(View.INVISIBLE);
+                    NonEmptyLayout.setVisibility(View.VISIBLE);
                 }
                 break;
             }
@@ -175,12 +183,14 @@ public class MainActivity extends Activity implements View.OnClickListener, TabH
     }
 
     @Override
+
     public void onTabChanged(String tabTag)
     {
-        Chapter g = (Chapter)noteBook.Chapters.get(tabTag);
-        if (g.PagesExist)
+        Chapter CurrentChapter = (Chapter)noteBook.Chapters.get(tabTag);
+        if (CurrentChapter.PagesExist)
         {
-            PageAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,noteBook.Chapters.get(tabTag).Pages);
+            PageAdapter = new ArrayAdapter<String>
+                    (this,android.R.layout.simple_list_item_1,noteBook.Chapters.get(tabTag).CreateHeadersList());
             PageList.setAdapter(PageAdapter);
             PageAdapter.notifyDataSetChanged();
 
@@ -192,6 +202,29 @@ public class MainActivity extends Activity implements View.OnClickListener, TabH
             EmptyLayout.setVisibility(View.VISIBLE);
             NonEmptyLayout.setVisibility(View.INVISIBLE);
         }
-        Toast.makeText(getBaseContext(),tabTag,Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long ID)
+    {
+        String Tag = Tabs.getCurrentTabTag();
+        noteBook.Chapters.get(Tag).RemovePage(position);
+        String TabTag = Tabs.getCurrentTabTag();
+        PageAdapter = new ArrayAdapter<String>
+                (this,android.R.layout.simple_list_item_1,noteBook.Chapters.get(TabTag).CreateHeadersList());
+        PageAdapter.notifyDataSetChanged();
+        PageList.setAdapter(PageAdapter);
+
+        if(!noteBook.Chapters.get(Tag).PagesExist)
+        {
+            EmptyLayout.setVisibility(View.VISIBLE);
+            NonEmptyLayout.setVisibility(View.INVISIBLE);
+        }
+        return false;
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
     }
 }
