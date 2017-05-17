@@ -1,23 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_edit_page"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.sam.EditPageActivity"
+    android:weightSum="10"
     android:orientation="vertical">
 
-    <TextView
-        android:text="TextView"
+    <EditText
+        android:textStyle="bold"
+        android:maxLines="1"
+        android:maxLength="255"
+        android:text="Header"
+        android:inputType="text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/page_header_edit"
-        android:layout_weight="1" />
+        android:layout_weight="2"
+        android:minHeight="75dp"
+        android:textColorLink="@android:color/background_light" />
 
-    <TextView
-        android:text="TextView"
+    <EditText
+        android:text="PageText"
+        android:inputType="textMultiLine"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_weight="7"
         android:id="@+id/page_edit_text"
-        android:layout_weight="1" />
+        android:layout_height="match_parent"
+        android:gravity="top"
+        android:textColorLink="@android:color/transparent" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@android:color/darker_gray">
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/save_icon_60x60"
+            android:id="@+id/imageButton2" />
+    </LinearLayout>
+
 </LinearLayout>

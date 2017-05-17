@@ -17,6 +17,7 @@ import android.widget.Toast;
 public class MainActivity extends Activity implements View.OnClickListener, TabHost.OnTabChangeListener, AdapterView.OnItemLongClickListener, AdapterView.OnItemClickListener {
     final int ChapterCreateRequest = 1;
     final int PageCreateRequest=2;
+    final int PageEditRequest=3;
 
     NoteBook noteBook = new NoteBook();
 
@@ -142,6 +143,11 @@ public class MainActivity extends Activity implements View.OnClickListener, TabH
                 }
                 break;
             }
+            case PageEditRequest:
+            {
+                String Text = data.getStringExtra("Note");
+
+            }
         }
 
     }
@@ -224,7 +230,9 @@ public class MainActivity extends Activity implements View.OnClickListener, TabH
     }
 
     @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
+    {
+        Intent intent = new Intent(MainActivity.this,EditPageActivity.class);
+        startActivityForResult(intent,PageEditRequest);
     }
 }
