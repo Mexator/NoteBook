@@ -1,6 +1,8 @@
 package com.example.sam;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
@@ -14,7 +16,8 @@ import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.Toast;
 
-public class MainActivity extends Activity implements View.OnClickListener, TabHost.OnTabChangeListener, AdapterView.OnItemLongClickListener, AdapterView.OnItemClickListener {
+public class MainActivity extends Activity implements View.OnClickListener, TabHost.OnTabChangeListener,
+        AdapterView.OnItemLongClickListener, AdapterView.OnItemClickListener {
     final int ChapterCreateRequest = 1;
     final int PageCreateRequest=2;
     final int PageEditRequest=3;
@@ -30,6 +33,8 @@ public class MainActivity extends Activity implements View.OnClickListener, TabH
     int TabsID =0;
 
     ArrayAdapter<String> PageAdapter;
+
+    AlertDialog.Builder dialogBuilder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -145,8 +150,21 @@ public class MainActivity extends Activity implements View.OnClickListener, TabH
             }
             case PageEditRequest:
             {
-                String Text = data.getStringExtra("Note");
+                if(resultCode != RESULT_CANCELED)
+                {
+                    String Text = data.getStringExtra("Note");
+                    String Header = data.getStringExtra("Header");
+                    int Position = data.getIntExtra("Position",0);
+                    String tag = Tabs.getCurrentTabTag();
+                    noteBook.Chapters.get(tag).Pages.get(Position).Header = Header;
+                    noteBook.Chapters.get(tag).Pages.get(Position).Text = Text;
+                    noteBook.Chapters.get(tag).Pages.get(Position).CreatePreview();
 
+                    PageAdapter = new ArrayAdapter<String>
+                            (this,android.R.layout.simple_list_item_1,noteBook.Chapters.get(tag).CreateHeadersList());
+                    PageList.setAdapter(PageAdapter);
+                    PageAdapter.notifyDataSetChanged();
+                }
             }
         }
 
@@ -211,7 +229,28 @@ public class MainActivity extends Activity implements View.OnClickListener, TabH
     }
 
     @Override
-    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long ID)
+    public boolean onItemLongClick(AdapterView<?> adapterView, View view, final int position, long ID)
+    {
+
+        dialogBuilder = new AlertDialog.Builder(MainActivity.this);
+        dialogBuilder.setTitle("Deleting note");
+        dialogBuilder.setMessage("Delete note?");
+        dialogBuilder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int arg1)
+            {
+                deletePage(position);
+            }
+        });
+        dialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int arg1) {
+
+            }
+        });
+        dialogBuilder.setCancelable(true);
+        dialogBuilder.show();
+        return false;
+    }
+    private void deletePage(int position)
     {
         String Tag = Tabs.getCurrentTabTag();
         noteBook.Chapters.get(Tag).RemovePage(position);
@@ -226,13 +265,15 @@ public class MainActivity extends Activity implements View.OnClickListener, TabH
             EmptyLayout.setVisibility(View.VISIBLE);
             NonEmptyLayout.setVisibility(View.INVISIBLE);
         }
-        return false;
     }
-
     @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l)
     {
         Intent intent = new Intent(MainActivity.this,EditPageActivity.class);
+        intent.putExtra("Position",position);
+        Page page = noteBook.Chapters.get(Tabs.getCurrentTabTag()).Pages.get(position);
+        intent.putExtra("Header",page.Header);
+        intent.putExtra("Note",page.Text);
         startActivityForResult(intent,PageEditRequest);
     }
 }

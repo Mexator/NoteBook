@@ -27,9 +27,10 @@
         android:inputType="textMultiLine"
         android:layout_width="match_parent"
         android:layout_weight="7"
-        android:id="@+id/page_edit_text"
+        android:id="@+id/page_note_edit"
         android:layout_height="match_parent"
         android:gravity="top"
+        android:background="#00000000"
         android:textColorLink="@android:color/transparent" />
 
     <LinearLayout
@@ -42,8 +43,20 @@
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/save_icon_60x60"
-            android:id="@+id/imageButton2" />
+            app:srcCompat="@drawable/save_icon_64x64"
+            android:id="@+id/save_page_button" />
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/close_icon_64x64"
+            android:id="@+id/close_edit_button" />
+
     </LinearLayout>
 
 </LinearLayout>

@@ -15,5 +15,9 @@ public class Page
         Text = "";
         Preview="";
     }
+    public int CreatePreview()
+    {
+        return 0;
+    }
 }
 
