@@ -68,7 +68,7 @@ public class Chapter
 
         for(Page CurPage: Pages)
         {
-            Headers.add(CurPage.Header);
+            Headers.add(CurPage.getHeader());
         }
         return Headers;
     }

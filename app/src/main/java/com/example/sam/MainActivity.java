@@ -152,12 +152,11 @@ public class MainActivity extends Activity implements View.OnClickListener, TabH
             {
                 if(resultCode != RESULT_CANCELED)
                 {
-                    String Text = data.getStringExtra("Note");
-                    String Header = data.getStringExtra("Header");
+                    Page page = data.getParcelableExtra("Page");
                     int Position = data.getIntExtra("Position",0);
                     String tag = Tabs.getCurrentTabTag();
-                    noteBook.Chapters.get(tag).Pages.get(Position).Header = Header;
-                    noteBook.Chapters.get(tag).Pages.get(Position).Text = Text;
+                    noteBook.Chapters.get(tag).Pages.get(Position).setHeader(page.getHeader());
+                    noteBook.Chapters.get(tag).Pages.get(Position).setText(page.getText());
                     noteBook.Chapters.get(tag).Pages.get(Position).CreatePreview();
 
                     PageAdapter = new ArrayAdapter<String>
@@ -272,8 +271,7 @@ public class MainActivity extends Activity implements View.OnClickListener, TabH
         Intent intent = new Intent(MainActivity.this,EditPageActivity.class);
         intent.putExtra("Position",position);
         Page page = noteBook.Chapters.get(Tabs.getCurrentTabTag()).Pages.get(position);
-        intent.putExtra("Header",page.Header);
-        intent.putExtra("Note",page.Text);
+        intent.putExtra("Page",new Page(page.getHeader(),page.getText()));
         startActivityForResult(intent,PageEditRequest);
     }
 }

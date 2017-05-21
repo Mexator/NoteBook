@@ -6,7 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.sam.EditPageActivity"
-    android:weightSum="10"
     android:orientation="vertical">
 
     <EditText
@@ -16,46 +15,55 @@
         android:text="Header"
         android:inputType="text"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:id="@+id/page_header_edit"
-        android:layout_weight="2"
-        android:minHeight="75dp"
+        android:layout_weight="1"
         android:textColorLink="@android:color/background_light" />
 
     <EditText
         android:text="PageText"
         android:inputType="textMultiLine"
         android:layout_width="match_parent"
-        android:layout_weight="7"
+        android:layout_weight="8"
         android:id="@+id/page_note_edit"
-        android:layout_height="match_parent"
         android:gravity="top"
         android:background="#00000000"
-        android:textColorLink="@android:color/transparent" />
+        android:textColorLink="@android:color/transparent"
+        android:layout_height="0dp" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:visibility="invisible"
+        app:srcCompat="@android:drawable/alert_dark_frame"
+        android:id="@+id/imageView" />
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:background="@android:color/darker_gray">
 
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/save_icon_64x64"
-            android:id="@+id/save_page_button" />
+            android:id="@+id/save_page_button"
+            android:layout_weight="1"/>
 
-        <Space
+        <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            app:srcCompat="@drawable/photo_icon_64x64"
+            android:id="@+id/add_image_button"
+            android:layout_weight="2" />
 
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/close_icon_64x64"
-            android:id="@+id/close_edit_button" />
+            android:id="@+id/close_edit_button"
+            android:layout_weight="1"/>
 
     </LinearLayout>
 

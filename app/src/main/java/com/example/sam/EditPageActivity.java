@@ -11,10 +11,9 @@ import android.widget.ImageButton;
 public class EditPageActivity extends AppCompatActivity implements View.OnClickListener{
     ImageButton SaveButton;
     ImageButton CloseButton;
+    ImageButton AddImageButton;
     EditText HeaderEdit,NoteEdit;
-
-    boolean  Saved = false;
-
+    Page page;
     Intent answerIntent = new Intent();
 
     @Override
@@ -24,12 +23,16 @@ public class EditPageActivity extends AppCompatActivity implements View.OnClickL
 
         SaveButton = (ImageButton) findViewById(R.id.save_page_button);
         CloseButton = (ImageButton)findViewById(R.id.close_edit_button);
+        AddImageButton =(ImageButton)findViewById(R.id.add_image_button);
         HeaderEdit = (EditText)findViewById(R.id.page_header_edit);
         NoteEdit=(EditText)findViewById(R.id.page_note_edit);
 
-        HeaderEdit.setText(getIntent().getStringExtra("Header"));
-        NoteEdit.setText(getIntent().getStringExtra("Note"));
+        page = getIntent().getParcelableExtra("Page");
 
+        HeaderEdit.setText(page.getHeader());
+        NoteEdit.setText(page.getText());
+
+        AddImageButton.setOnClickListener(this);
         SaveButton.setOnClickListener(this);
         CloseButton.setOnClickListener(this);
     }
@@ -42,21 +45,21 @@ public class EditPageActivity extends AppCompatActivity implements View.OnClickL
         {
             case R.id.save_page_button:
             {
-                answerIntent.putExtra("Header",HeaderEdit.getText().toString());
-                answerIntent.putExtra("Note",NoteEdit.getText().toString());
-                Saved = true;
+                page.setHeader(HeaderEdit.getText().toString());
+                page.setText(NoteEdit.getText().toString());
                 break;
             }
             case R.id.close_edit_button:
             {
-                if(!Saved)
-                {
-                    answerIntent.putExtra("Header",getIntent().getStringExtra("Header"));
-                    answerIntent.putExtra("Note",getIntent().getStringExtra("Note"));
-                }
+                answerIntent.putExtra("Page",page);
                 answerIntent.putExtra("Position",getIntent().getIntExtra("Position",0));
                 setResult(RESULT_OK,answerIntent);
                 finish();
+                break;
+            }
+            case(R.id.add_image_button):
+            {
+
             }
         }
     }
