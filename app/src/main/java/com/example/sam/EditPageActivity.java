@@ -7,12 +7,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 
 public class EditPageActivity extends AppCompatActivity implements View.OnClickListener{
     ImageButton SaveButton;
     ImageButton CloseButton;
-    ImageButton AddImageButton;
+    ImageButton AddImageButton,RecognizeImageButton;
     EditText HeaderEdit,NoteEdit;
+    ImageView PageImageContent;
+
     Page page;
     Intent answerIntent = new Intent();
 
@@ -24,8 +27,10 @@ public class EditPageActivity extends AppCompatActivity implements View.OnClickL
         SaveButton = (ImageButton) findViewById(R.id.save_page_button);
         CloseButton = (ImageButton)findViewById(R.id.close_edit_button);
         AddImageButton =(ImageButton)findViewById(R.id.add_image_button);
+        RecognizeImageButton = (ImageButton)findViewById(R.id.recognize_image_button);
         HeaderEdit = (EditText)findViewById(R.id.page_header_edit);
-        NoteEdit=(EditText)findViewById(R.id.page_note_edit);
+        NoteEdit=(EditText)findViewById(R.id.page_text_content);
+        PageImageContent = (ImageView)findViewById(R.id.page_image_content);
 
         page = getIntent().getParcelableExtra("Page");
 
@@ -35,6 +40,7 @@ public class EditPageActivity extends AppCompatActivity implements View.OnClickL
         AddImageButton.setOnClickListener(this);
         SaveButton.setOnClickListener(this);
         CloseButton.setOnClickListener(this);
+        RecognizeImageButton.setOnClickListener(this);
     }
 
 
@@ -59,7 +65,23 @@ public class EditPageActivity extends AppCompatActivity implements View.OnClickL
             }
             case(R.id.add_image_button):
             {
+                AddImageButton.setVisibility(View.INVISIBLE);//Change buttons state
+                RecognizeImageButton.setVisibility(View.VISIBLE);
 
+                NoteEdit.setVisibility(View.INVISIBLE);
+                PageImageContent.setVisibility(View.VISIBLE);
+
+                break;
+            }
+            case(R.id.recognize_image_button):
+            {
+                RecognizeImageButton.setVisibility(View.INVISIBLE);//Change buttons state
+                AddImageButton.setVisibility(View.VISIBLE);
+
+                NoteEdit.setVisibility(View.VISIBLE);
+                PageImageContent.setVisibility(View.INVISIBLE);
+
+                break;
             }
         }
     }

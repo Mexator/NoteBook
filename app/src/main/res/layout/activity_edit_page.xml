@@ -20,46 +20,72 @@
         android:layout_weight="1"
         android:textColorLink="@android:color/background_light" />
 
-    <EditText
-        android:text="PageText"
-        android:inputType="textMultiLine"
-        android:layout_width="match_parent"
-        android:layout_weight="8"
-        android:id="@+id/page_note_edit"
-        android:gravity="top"
-        android:background="#00000000"
-        android:textColorLink="@android:color/transparent"
-        android:layout_height="0dp" />
-
-    <ImageView
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:visibility="invisible"
-        app:srcCompat="@android:drawable/alert_dark_frame"
-        android:id="@+id/imageView" />
+        android:layout_weight="8">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible"
+            android:scaleType="fitXY"
+            android:adjustViewBounds="true"
+            app:srcCompat="@android:drawable/alert_dark_frame"
+            android:id="@+id/page_image_content" />
+
+        <EditText
+            android:text="PageText"
+            android:inputType="textMultiLine"
+            android:layout_width="match_parent"
+            android:id="@+id/page_text_content"
+            android:gravity="top"
+            android:background="#00000000"
+            android:textColorLink="@android:color/transparent"
+            android:layout_height="match_parent" />
+    </FrameLayout>
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/darker_gray">
+        android:background="@android:color/darker_gray"
+        android:weightSum="8">
 
         <ImageButton
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/save_icon_64x64"
             android:id="@+id/save_page_button"
             android:layout_weight="1"/>
 
-        <ImageButton
+        <Space
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <ImageButton
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/photo_icon_64x64"
             android:id="@+id/add_image_button"
-            android:layout_weight="2" />
+            android:layout_weight="2"/>
 
         <ImageButton
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/default_doc_64x64"
+            android:id="@+id/recognize_image_button"
+            android:visibility="invisible"
+            android:layout_weight="2"/>
+
+        <Space
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <ImageButton
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/close_icon_64x64"
             android:id="@+id/close_edit_button"
