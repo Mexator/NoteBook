@@ -53,7 +53,7 @@
         android:weightSum="8">
 
         <ImageButton
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/save_icon_64x64"
             android:id="@+id/save_page_button"
@@ -65,14 +65,14 @@
             android:layout_weight="1" />
 
         <ImageButton
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/photo_icon_64x64"
             android:id="@+id/add_image_button"
             android:layout_weight="2"/>
 
         <ImageButton
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/default_doc_64x64"
             android:id="@+id/recognize_image_button"
@@ -85,7 +85,7 @@
             android:layout_weight="1" />
 
         <ImageButton
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/close_icon_64x64"
             android:id="@+id/close_edit_button"

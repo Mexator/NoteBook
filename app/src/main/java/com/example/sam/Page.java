@@ -1,8 +1,14 @@
 package com.example.sam;
 
+import android.app.Application;
 import android.graphics.Bitmap;
+import android.media.Image;
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.provider.MediaStore;
+
+import java.net.URI;
 
 /**
  * Created by Антон on 15.05.2017.
@@ -13,7 +19,7 @@ public class Page implements Parcelable
     private String Header;
     public boolean isImage;
     private String Text;
-    private Bitmap PageImage;
+    private Uri PageImage;
     private String Preview;
     public Page(String header)
     {
@@ -31,10 +37,12 @@ public class Page implements Parcelable
         PageImage = null;
         isImage = false;
     }
-    public Page(String header,Bitmap pageImage)
+    public Page(String header,Uri pageImage)
     {
         PageImage = pageImage;
         Header = header;
+        Text = "";
+        Preview = "";
         isImage = true;
     }
     protected Page(Parcel in)
@@ -60,11 +68,11 @@ public class Page implements Parcelable
     {
         Header = header;
     }
-    public Bitmap getPageImage()
+    public Uri getPageImage()
     {
         return PageImage;
     }
-    public void setPageImage(Bitmap pageImage)
+    public void setPageImage(Uri pageImage)
     {
         PageImage = pageImage;
     }

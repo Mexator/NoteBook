@@ -156,9 +156,17 @@ public class MainActivity extends Activity implements View.OnClickListener, TabH
                     int Position = data.getIntExtra("Position",0);
                     String tag = Tabs.getCurrentTabTag();
                     noteBook.Chapters.get(tag).Pages.get(Position).setHeader(page.getHeader());
-                    noteBook.Chapters.get(tag).Pages.get(Position).setText(page.getText());
+                    if(page.isImage)
+                    {
+                        noteBook.Chapters.get(tag).Pages.get(Position).isImage = true;
+                        noteBook.Chapters.get(tag).Pages.get(Position).setPageImage(page.getPageImage());
+                    }
+                    else
+                    {
+                        noteBook.Chapters.get(tag).Pages.get(Position).isImage=false;
+                        noteBook.Chapters.get(tag).Pages.get(Position).setText(page.getText());
+                    }
                     noteBook.Chapters.get(tag).Pages.get(Position).CreatePreview();
-
                     PageAdapter = new ArrayAdapter<String>
                             (this,android.R.layout.simple_list_item_1,noteBook.Chapters.get(tag).CreateHeadersList());
                     PageList.setAdapter(PageAdapter);
@@ -271,7 +279,7 @@ public class MainActivity extends Activity implements View.OnClickListener, TabH
         Intent intent = new Intent(MainActivity.this,EditPageActivity.class);
         intent.putExtra("Position",position);
         Page page = noteBook.Chapters.get(Tabs.getCurrentTabTag()).Pages.get(position);
-        intent.putExtra("Page",new Page(page.getHeader(),page.getText()));
+        intent.putExtra("Page",page);
         startActivityForResult(intent,PageEditRequest);
     }
 }
