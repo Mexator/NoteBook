@@ -192,18 +192,14 @@ public class EditPageActivity extends AppCompatActivity implements View.OnClickL
         int neww = bitmap.getWidth();
         int newh = bitmap.getHeight();
 
-        if(newh>1000||neww>1000)
+        while((newh>1000)||(neww>1000))
         {
             newh/=2;
             neww/=2;
         }
-        if(newh>1000||neww>1000)
-        {
-            newh/=2;
-            neww/=2;
-        }
-
         bitmap = Bitmap.createScaledBitmap(bitmap,neww,newh,false);
+
+        PageImageContent.setImageBitmap(bitmap);
 
         TessBaseAPI tessBaseApi = new TessBaseAPI();
         tessBaseApi.init(DATA_PATH, "eng");
