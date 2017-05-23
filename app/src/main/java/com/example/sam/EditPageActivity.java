@@ -3,6 +3,8 @@ package com.example.sam;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -122,15 +124,13 @@ public class EditPageActivity extends AppCompatActivity implements View.OnClickL
 
                 RecognizeImageButton.setVisibility(View.INVISIBLE);//Change buttons state
                 AddImageButton.setVisibility(View.VISIBLE);
-
-                NoteEdit.setVisibility(View.VISIBLE);
-                PageImageContent.setVisibility(View.INVISIBLE);
-
                 try {
                     NoteEdit.setText(RecognizeImage(page.getPageImage()));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                NoteEdit.setVisibility(View.VISIBLE);
+                PageImageContent.setVisibility(View.INVISIBLE);
 
                 break;
             }
@@ -145,7 +145,13 @@ public class EditPageActivity extends AppCompatActivity implements View.OnClickL
             {    if(resultCode == RESULT_OK)
                 {
                     image = intent.getData();
-                    PageImageContent.setImageURI(image);
+                    Bitmap bitmap = null;
+                    try {
+                        bitmap =  MediaStore.Images.Media.getBitmap(this.getContentResolver(),image);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    PageImageContent.setImageBitmap(bitmap);
                     break;
                 }
             }
@@ -184,19 +190,10 @@ public class EditPageActivity extends AppCompatActivity implements View.OnClickL
             }
         } catch (IOException e) {
         }
-
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inSampleSize = 4; // 1 - means max size. 4 - means maxsize/4 size. Don't use value <4, because you need more memory in the heap to store your data.
-        Bitmap bitmap =  MediaStore.Images.Media.getBitmap(this.getContentResolver(),InputImage);
-
+        Bitmap bitmap = ((BitmapDrawable)PageImageContent.getDrawable()).getBitmap();
         int neww = bitmap.getWidth();
         int newh = bitmap.getHeight();
 
-        while((newh>1000)||(neww>1000))
-        {
-            newh/=2;
-            neww/=2;
-        }
         bitmap = Bitmap.createScaledBitmap(bitmap,neww,newh,false);
 
         PageImageContent.setImageBitmap(bitmap);
