@@ -2,9 +2,7 @@ package com.example.sam;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -23,7 +21,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import static android.graphics.Bitmap.Config.RGB_565;
 
 public class EditPageActivity extends AppCompatActivity implements View.OnClickListener{
     final int GALLERY_REQUEST = 1;
@@ -36,7 +33,7 @@ public class EditPageActivity extends AppCompatActivity implements View.OnClickL
 
     Page page;
     Intent answerIntent = new Intent();
-    Uri image;
+    Uri SourcePageImage,CompressedPageImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,9 +79,40 @@ public class EditPageActivity extends AppCompatActivity implements View.OnClickL
         {
             case R.id.save_page_button:
             {
+                String DataPath = getApplicationInfo().dataDir+"/"+page.getID()+"/";
+                try
+                {
+                    String TextPath = DataPath+"textasset";
+                    FileOutputStream textSave = new FileOutputStream(TextPath);
+                    textSave.write(page.getHeader().getBytes());
+                    textSave.write(page.getText().getBytes());
+                    textSave.flush();
+                    textSave.close();
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
                 page.setHeader(HeaderEdit.getText().toString());
                 page.setText(NoteEdit.getText().toString());
-                page.setPageImage(image);
+                try
+                {
+                    String ImPath = DataPath+"imgasset";
+                    FileOutputStream imageSave = new FileOutputStream(ImPath);
+
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(),CompressedPageImage);
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 75, imageSave);
+                    imageSave.flush();
+                    imageSave.close();
+                    CompressedPageImage = Uri.parse(ImPath);
+                    bitmap.recycle();
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+                page.setPageImage(CompressedPageImage);
+                page.isImage = (CompressedPageImage!=null);
                 break;
             }
             case R.id.close_edit_button:
@@ -104,8 +132,6 @@ public class EditPageActivity extends AppCompatActivity implements View.OnClickL
             }
             case(R.id.add_image_button):
             {
-                page.isImage = true;
-
                 AddImageButton.setVisibility(View.INVISIBLE);//Change buttons state
                 RecognizeImageButton.setVisibility(View.VISIBLE);
 
@@ -120,18 +146,20 @@ public class EditPageActivity extends AppCompatActivity implements View.OnClickL
             }
             case(R.id.recognize_image_button):
             {
-                page.isImage = false;
-
                 RecognizeImageButton.setVisibility(View.INVISIBLE);//Change buttons state
                 AddImageButton.setVisibility(View.VISIBLE);
-                try {
-                    NoteEdit.setText(RecognizeImage(page.getPageImage()));
-                } catch (IOException e) {
+                try
+                {
+                    NoteEdit.setText(RecognizeImage(CompressedPageImage));
+                }
+                catch (IOException e)
+                {
                     e.printStackTrace();
                 }
                 NoteEdit.setVisibility(View.VISIBLE);
                 PageImageContent.setVisibility(View.INVISIBLE);
 
+                CompressedPageImage = null;
                 break;
             }
         }
@@ -144,14 +172,33 @@ public class EditPageActivity extends AppCompatActivity implements View.OnClickL
             case GALLERY_REQUEST:
             {    if(resultCode == RESULT_OK)
                 {
-                    image = intent.getData();
+                    SourcePageImage = intent.getData();
                     Bitmap bitmap = null;
-                    try {
-                        bitmap =  MediaStore.Images.Media.getBitmap(this.getContentResolver(),image);
-                    } catch (IOException e) {
+                    try
+                    {
+                        bitmap =  MediaStore.Images.Media.getBitmap(this.getContentResolver(),SourcePageImage);
+                    }
+                    catch (IOException e)
+                    {
                         e.printStackTrace();
                     }
                     PageImageContent.setImageBitmap(bitmap);
+
+                    String AppPath = getApplicationInfo().dataDir;
+                    try
+                    {
+                        String ImPath = AppPath+"/"+"tmp"+".imgasset";
+                        FileOutputStream imageSave = new FileOutputStream(ImPath);
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 75, imageSave);
+                        imageSave.flush();
+                        imageSave.close();
+                        CompressedPageImage = Uri.parse(ImPath);
+                    }
+                    catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+
                     break;
                 }
             }
@@ -161,9 +208,8 @@ public class EditPageActivity extends AppCompatActivity implements View.OnClickL
         final String DATA_PATH = Environment.getExternalStorageDirectory().toString() + "/TesseractSample/";
         final String TESSDATA = "tessdata";
 
-        File dir = new File(DATA_PATH+TESSDATA);
-        String path = TESSDATA;
         try {
+            String path = TESSDATA;
             String fileList[] = getAssets().list(path);
 
             for (String fileName : fileList) {
@@ -188,7 +234,9 @@ public class EditPageActivity extends AppCompatActivity implements View.OnClickL
                     out.close();
                 }
             }
-        } catch (IOException e) {
+        } catch (IOException e)
+        {
+            e.printStackTrace();
         }
         Bitmap bitmap = ((BitmapDrawable)PageImageContent.getDrawable()).getBitmap();
         int neww = bitmap.getWidth();

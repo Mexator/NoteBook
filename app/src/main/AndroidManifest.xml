@@ -4,9 +4,9 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
+        android:icon="@drawable/default_doc_64x64"
         android:supportsRtl="true"
+        android:label="OptNote"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity"
             android:screenOrientation="landscape">
@@ -15,6 +15,7 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
         </activity>
         <activity
             android:name=".ChapterNameEnterActivity"

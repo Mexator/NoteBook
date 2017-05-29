@@ -55,40 +55,33 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/save_icon_64x64"
-            android:id="@+id/save_page_button"
-            android:layout_weight="1"/>
+            android:id="@+id/save_page_button"/>
 
-        <Space
+        <FrameLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_height="match_parent">
 
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/photo_icon_64x64"
-            android:id="@+id/add_image_button"
-            android:layout_weight="2"/>
+            <ImageButton
+                android:id="@+id/recognize_image_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="invisible"
+                app:srcCompat="@drawable/default_doc_64x64" />
 
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/default_doc_64x64"
-            android:id="@+id/recognize_image_button"
-            android:visibility="invisible"
-            android:layout_weight="2"/>
+            <ImageButton
+                android:id="@+id/add_image_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/photo_icon_64x64" />
 
-        <Space
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
+        </FrameLayout>
+
 
         <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/close_icon_64x64"
             android:id="@+id/close_edit_button"
-            android:layout_weight="1"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/close_icon_64x64" />
 
     </LinearLayout>
 

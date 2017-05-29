@@ -16,6 +16,8 @@ import java.net.URI;
 
 public class Page implements Parcelable
 {
+    private static int IDCounter=0;
+    private int ID;
     private String Header;
     public boolean isImage;
     private String Text;
@@ -23,6 +25,7 @@ public class Page implements Parcelable
     private String Preview;
     public Page(String header)
     {
+        ID = IDCounter++;
         Header = header;
         Text = "";
         Preview="";
@@ -31,6 +34,7 @@ public class Page implements Parcelable
     }
     public Page(String header,String text)
     {
+        ID = IDCounter++;
         Header = header;
         Text = text;
         Preview = "";
@@ -39,6 +43,7 @@ public class Page implements Parcelable
     }
     public Page(String header,Uri pageImage)
     {
+        ID = IDCounter++;
         PageImage = pageImage;
         Header = header;
         Text = "";
@@ -47,10 +52,15 @@ public class Page implements Parcelable
     }
     protected Page(Parcel in)
     {
+        ID = in.readInt();
         Header = in.readString();
         isImage = (in.readByte() != 0);
         PageImage = in.readParcelable(Bitmap.class.getClassLoader());
         Text = in.readString();
+    }
+    public int getID()
+    {
+        return ID;
     }
     public String getText()
     {
@@ -87,7 +97,9 @@ public class Page implements Parcelable
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(Parcel dest, int flags)
+    {
+        dest.writeInt(ID);
         dest.writeString(Header);
         dest.writeByte((byte)(isImage? 1:0));
         dest.writeParcelable(PageImage,0);
