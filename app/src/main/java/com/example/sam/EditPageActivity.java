@@ -80,50 +80,23 @@ public class EditPageActivity extends AppCompatActivity implements View.OnClickL
             case R.id.save_page_button:
             {
                 String DataPath = getApplicationInfo().dataDir+"/"+page.getID()+"/";
-                try
-                {
-                    String TextPath = DataPath+"textasset";
-                    FileOutputStream textSave = new FileOutputStream(TextPath);
-                    textSave.write(page.getHeader().getBytes());
-                    textSave.write(page.getText().getBytes());
-                    textSave.flush();
-                    textSave.close();
-                }
-                catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
                 page.setHeader(HeaderEdit.getText().toString());
                 page.setText(NoteEdit.getText().toString());
-                try
-                {
-                    String ImPath = DataPath+"imgasset";
-                    FileOutputStream imageSave = new FileOutputStream(ImPath);
-
-                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(),CompressedPageImage);
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 75, imageSave);
-                    imageSave.flush();
-                    imageSave.close();
-                    CompressedPageImage = Uri.parse(ImPath);
-                    bitmap.recycle();
-                }
-                catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
                 page.setPageImage(CompressedPageImage);
                 page.isImage = (CompressedPageImage!=null);
+                page.SavePage(DataPath);
+                CompressedPageImage = Uri.parse(DataPath+page.getID()+"imgasset");
                 break;
             }
             case R.id.close_edit_button:
             {
                 if(page.isImage)
                 {
-                    answerIntent.putExtra("Page", new Page(page.getHeader(), page.getPageImage()));
+                    answerIntent.putExtra("Page", page);
                 }
                 else
                 {
-                    answerIntent.putExtra("Page", new Page(page.getHeader(), page.getText()));
+                    answerIntent.putExtra("Page", page);
                 }
                 answerIntent.putExtra("Position",getIntent().getIntExtra("Position",0));
                 setResult(RESULT_OK,answerIntent);

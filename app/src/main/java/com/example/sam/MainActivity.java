@@ -22,7 +22,7 @@ public class MainActivity extends Activity implements View.OnClickListener, TabH
     final int PageCreateRequest=2;
     final int PageEditRequest=3;
 
-    NoteBook noteBook = new NoteBook();
+    NoteBook noteBook;
 
     TabHost Tabs;
     ListView PageList;
@@ -41,21 +41,16 @@ public class MainActivity extends Activity implements View.OnClickListener, TabH
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        noteBook = new NoteBook(getApplicationInfo().dataDir);
+        noteBook.LoadChapters();
         FindViews();
-
         InitTabHost(Tabs);
-
-        Tabs.setOnTabChangedListener(this);
-
-
         SetListeners();
     }
     private void InitTabHost(TabHost tabHost)
     {
         Tabs = (TabHost)findViewById(R.id.tabHost);//Находим TabHost
         Tabs.setup();//Включаем TabHost
-
         AddNewChapter(Tabs,"Заметки");
     }
     private void FindViews()
@@ -198,16 +193,16 @@ public class MainActivity extends Activity implements View.OnClickListener, TabH
     private void AddNewChapter(TabHost tabHost,String name)//Creates new tab in tabhost
     {
         String tag = "tab"+Integer.toString(TabsID++);
-        TabHost.TabSpec tabSpec = Tabs.newTabSpec(tag);
+        TabHost.TabSpec tabSpec = tabHost.newTabSpec(tag);
         tabSpec.setContent(R.id.empty_tab);
         tabSpec.setIndicator(name);
-        Tabs.addTab(tabSpec);
+        tabHost.addTab(tabSpec);
 
-        Chapter chapter = new Chapter(this.getBaseContext(),TabsID-1,tabHost);
+        Chapter chapter = new Chapter(TabsID-1,tabHost);
         noteBook.Chapters.put(tag,chapter);
         noteBook.ChaptersNum++;
 
-        Tabs.setCurrentTabByTag(tag);
+        tabHost.setCurrentTabByTag(tag);
 
         EmptyLayout.setVisibility(View.VISIBLE);
         NonEmptyLayout.setVisibility(View.INVISIBLE);
